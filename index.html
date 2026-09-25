@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vaultex — Controlo Financeiro</title>
+  <meta name="description" content="Vaultex — Controlo pessoal de receitas e despesas simples, elegante e privado.">
+  <meta name="color-scheme" content="dark">
+
+  <!-- Favicon com o Logótipo do Hexágono Dourado -->
+  <link rel="icon" type="image/svg+xml" href="files/favicon.svg">
+  <link rel="alternate icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2308090c'/><polygon points='50,12 86,33 86,67 50,88 14,67 14,33' fill='none' stroke='%23d4af37' stroke-width='8' stroke-linejoin='round'/><circle cx='50' cy='50' r='15' fill='%23d4af37'/></svg>">
+
+  <!-- Google Fonts: Cinzel & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js para visualização das despesas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Flatpickr (Calendário e Seleção de Datas em Português) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-obsidian text-platinum">
+
+  <!-- Ambient Luxury Glows (Paleta nobre de preto e ouro) -->
+  <div class="ambient-glow" aria-hidden="true">
+    <div class="orb orb-gold"></div>
+    <div class="orb orb-emerald"></div>
+  </div>
+
+  <!-- Cabeçalho Superior -->
+  <header class="app-header">
+    <div class="container header-inner">
+      
+      <div class="brand-group" id="brandLogo" role="button" tabindex="0" title="Voltar ao topo">
+        <div class="brand-emblem">
+          <svg viewBox="0 0 100 100" class="logo-svg">
+            <polygon points="50,10 88,32 88,68 50,90 12,68 12,32" fill="none" stroke="#D4AF37" stroke-width="6" />
+            <circle cx="50" cy="50" r="14" fill="#D4AF37" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">VAULTEX</h1>
+          <span class="brand-subtitle">CONTROLO FINANCEIRO PESSOAL</span>
+        </div>
+      </div>
+
+      <!-- Filtro de Membros (1ª Pessoa / 2ª Pessoa / Todos) -->
+      <div class="member-filter">
+        <button class="filter-chip active" data-member="todos">
+          <i data-lucide="users"></i>
+          <span>Todos</span>
+        </button>
+        <button class="filter-chip" data-member="1ª Pessoa">
+          <span class="dot dot-david"></span>
+          <span class="member-name-1">1ª Pessoa</span>
+        </button>
+        <button class="filter-chip" data-member="Outro">
+          <span class="dot dot-partner"></span>
+          <span class="member-name-2">2ª Pessoa</span>
+        </button>
+      </div>
+
+      <!-- Ações do Topo -->
+      <div class="header-actions">
+        <button class="icon-btn" id="btnToggleSound" title="Ativar/Desativar Som dos Cliques">
+          <i data-lucide="volume-2" id="soundIcon"></i>
+        </button>
+        <button class="btn btn-gold" id="btnOpenNewEntry">
+          <i data-lucide="plus"></i>
+          <span>Adicionar Valor</span>
+        </button>
+        <button class="icon-btn" id="btnOpenSettings" title="Definições e Nomes">
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="container main-content">
+    
+    <!-- QUADRO RESUMO (Saldo Atual, Entradas, Despesas e Poupança do Mês) -->
+    <section class="summary-cards-grid">
+      
+      <!-- Saldo Atual Disponível -->
+      <div class="summary-card card-total">
+        <div class="card-top">
+          <span class="card-label">O Meu Dinheiro / Saldo Atual</span>
+          <div class="card-icon-box gold-icon-box">
+            <i data-lucide="wallet"></i>
+          </div>
+        </div>
+        <div class="card-value gold-text" id="totalBalanceDisplay">0,00 €</div>
+        <span class="card-foot" id="totalBalanceSubtitle">Calculado: Total de entradas acumuladas - Despesas</span>
+      </div>
+
+      <!-- Entradas do Mês -->
+      <div class="summary-card">
+        <div class="card-top">
+          <span class="card-label">Entradas (Este Mês)</span>
+          <div class="card-icon-box emerald-icon-box">
+            <i data-lucide="arrow-down-left"></i>
+          </div>
+        </div>
+        <div class="card-value emerald-text" id="monthInflowDisplay">+ 0,00 €</div>
+        <span class="card-foot" id="inflowCount">0 entradas registadas</span>
+      </div>
+
+      <!-- Despesas do Mês -->
+      <div class="summary-card">
+        <div class="card-top">
+          <span class="card-label">Despesas (Este Mês)</span>
+          <div class="card-icon-box rose-icon-box">
+            <i data-lucide="arrow-up-right"></i>
+          </div>
+        </div>
+        <div class="card-value rose-text" id="monthOutflowDisplay">- 0,00 €</div>
+        <span class="card-foot" id="outflowCount">0 despesas pagas</span>
+      </div>
+
+      <!-- Poupança & Cofrinho -->
+      <div class="summary-card card-savings">
+        <div class="card-top">
+          <span class="card-label">Poupança & Cofrinho</span>
+          <div class="card-icon-box blue-icon-box">
+            <i data-lucide="piggy-bank"></i>
+          </div>
+        </div>
+        <div class="card-value blue-text" id="monthSavingsTotalDisplay">0,00 €</div>
+        <div class="card-foot-flex">
+          <span class="card-foot" id="monthSavingsRate">0 registos no cofre</span>
+          <button type="button" class="btn-outline-savings" id="btnQuickSave" title="Guardar um valor na Poupança">
+            <i data-lucide="plus"></i> <span>Guardar</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- DIVISÃO ENTRE AS DUAS PESSOAS (1ª Pessoa vs 2ª Pessoa) -->
+    <section class="split-comparison-row">
+      <div class="person-box person-david">
+        <div class="person-header">
+          <div class="person-avatar avatar-d">1</div>
+          <div>
+            <h3 class="member-name-1">1ª Pessoa</h3>
+            <span class="person-role">Resumo pessoal</span>
+          </div>
+        </div>
+        <div class="person-numbers">
+          <div class="p-num">
+            <span>Entradas recebidas:</span>
+            <strong class="emerald-text" id="davidInflowText">0,00 €</strong>
+          </div>
+          <div class="p-num">
+            <span>Despesas pagas:</span>
+            <strong class="rose-text" id="davidOutflowText">0,00 €</strong>
+          </div>
+          <div class="p-num">
+            <span>Poupança guardada:</span>
+            <strong class="blue-text" id="davidSavingsText">0,00 €</strong>
+          </div>
+          <div class="p-num p-total">
+            <span>Saldo / Balanço:</span>
+            <strong class="gold-text" id="davidBalanceText">0,00 €</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="person-box person-partner">
+        <div class="person-header">
+          <div class="person-avatar avatar-p">2</div>
+          <div>
+            <h3 class="member-name-2">2ª Pessoa</h3>
+            <span class="person-role">Resumo pessoal</span>
+          </div>
+        </div>
+        <div class="person-numbers">
+          <div class="p-num">
+            <span>Entradas recebidas:</span>
+            <strong class="emerald-text" id="partnerInflowText">0,00 €</strong>
+          </div>
+          <div class="p-num">
+            <span>Despesas pagas:</span>
+            <strong class="rose-text" id="partnerOutflowText">0,00 €</strong>
+          </div>
+          <div class="p-num">
+            <span>Poupança guardada:</span>
+            <strong class="blue-text" id="partnerSavingsText">0,00 €</strong>
+          </div>
+          <div class="p-num p-total">
+            <span>Saldo / Balanço:</span>
+            <strong class="gold-text" id="partnerBalanceText">0,00 €</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRÁFICO VISUAL: PARA ONDE VAI O DINHEIRO -->
+    <section class="charts-section">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title"><i data-lucide="pie-chart"></i> Para Onde Vai o Dinheiro (Despesas por Categoria)</h3>
+            <span class="chart-subtitle">Compreenda com precisão onde tem os seus maiores gastos</span>
+          </div>
+        </div>
+        <div class="chart-content-row">
+          <div class="chart-canvas-wrap">
+            <canvas id="categoryDonutChart" height="230"></canvas>
+          </div>
+          <div class="category-breakdown-list" id="categoryBreakdownList">
+            <!-- Gerado via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABELA DE REGISTOS DE DESPESAS E RECEITAS -->
+    <section class="table-section">
+      <div class="table-header-bar">
+        <div>
+          <h3 class="section-title"><i data-lucide="list"></i> Registo de Despesas e Entradas</h3>
+          <span class="section-subtitle">Adicione, consulte e acompanhe as suas despesas ao pormenor</span>
+        </div>
+        <div class="table-actions-bar">
+          <input type="text" id="searchTx" placeholder="Pesquisar despesa..." class="search-input">
+          <select id="filterTypeSelect" class="filter-select">
+            <option value="todos">Tudo</option>
+            <option value="despesa">Apenas Despesas</option>
+            <option value="receita">Apenas Entradas</option>
+            <option value="poupanca">Apenas Poupanças</option>
+          </select>
+          <button class="btn btn-gold btn-sm" id="btnQuickAdd">
+            <i data-lucide="plus"></i>
+            <span>Nova Despesa</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Quem Pagou</th>
+              <th>Tipo</th>
+              <th class="text-right">Valor</th>
+              <th class="text-center">Ação</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsTbody">
+            <!-- Linhas inseridas pelo JavaScript -->
+          </tbody>
+        </table>
+        
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <i data-lucide="inbox"></i>
+          <p>Nenhuma despesa ou valor adicionado até ao momento.</p>
+          <button class="btn btn-gold btn-sm" id="btnEmptyStateAdd">Adicionar Primeiro Valor</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: ADICIONAR DESPESA / VALOR -->
+  <div class="modal-overlay" id="entryModal" aria-hidden="true">
+    <div class="modal-box" role="dialog" aria-labelledby="modalTitle">
+      <button class="modal-close-btn" id="btnCloseEntryModal"><i data-lucide="x"></i></button>
+
+      <h3 class="modal-heading" id="modalTitle">Adicionar Valor</h3>
+      <p class="modal-subheading">Registe uma despesa que efetuou ou um dinheiro que entrou.</p>
+
+      <form id="entryForm" class="modal-form">
+        
+        <!-- Tipo: Despesa, Entrada ou Poupança -->
+        <div class="type-toggle-switch">
+          <button type="button" class="type-btn active" id="btnTypeExpense" data-type="despesa">
+            <i data-lucide="arrow-up-right"></i>
+            <span>Despesa (Gastei)</span>
+          </button>
+          <button type="button" class="type-btn" id="btnTypeIncome" data-type="receita">
+            <i data-lucide="arrow-down-left"></i>
+            <span>Entrada (Recebi)</span>
+          </button>
+          <button type="button" class="type-btn" id="btnTypeSavings" data-type="poupanca">
+            <i data-lucide="piggy-bank"></i>
+            <span>Poupança (Guardei)</span>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="entryDesc">Descrição do pagamento ou recebimento *</label>
+          <input type="text" id="entryDesc" placeholder="Ex: Supermercado, Renda da Casa, Eletricidade, Jantar, Vencimento..." required autofocus>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="entryAmount">Valor (€ / $) *</label>
+            <input type="number" id="entryAmount" step="0.01" min="0.01" placeholder="0,00" required>
+          </div>
+
+          <div class="form-group">
+            <label for="entryDate">Data *</label>
+            <input type="date" id="entryDate" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="entryCategory">Categoria</label>
+            <select id="entryCategory">
+              <option value="Supermercado & Alimentação">Supermercado & Alimentação</option>
+              <option value="Habitação & Despesas Domésticas">Habitação & Despesas Domésticas</option>
+              <option value="Lazer & Restauração">Lazer & Restauração</option>
+              <option value="Transportes & Combustível">Transportes & Combustível</option>
+              <option value="Saúde & Farmácia">Saúde & Farmácia</option>
+              <option value="Compras Pessoais">Compras Pessoais</option>
+              <option value="Ordenado & Rendimentos">Ordenado & Rendimentos</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="entryPayer">Quem pagou ou recebeu? *</label>
+            <select id="entryPayer" required>
+              <option value="1ª Pessoa">1ª Pessoa</option>
+              <option value="Outro">2ª Pessoa</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer-actions">
+          <button type="button" class="btn btn-outline" id="btnCancelEntry">Cancelar</button>
+          <button type="submit" class="btn btn-gold">
+            <i data-lucide="check"></i>
+            <span>Guardar no Cofre</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: DEFINIÇÕES E NOMES -->
+  <div class="modal-overlay" id="settingsModal" aria-hidden="true">
+    <div class="modal-box" role="dialog" aria-labelledby="settingsTitle">
+      <button class="modal-close-btn" id="btnCloseSettingsModal"><i data-lucide="x"></i></button>
+
+      <h3 class="modal-heading" id="settingsTitle">Definições Pessoais</h3>
+      <p class="modal-subheading">Personalize o nome dos dois membros e as preferências.</p>
+
+      <form id="settingsForm" class="modal-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cfgName1">Nome da 1ª Pessoa *</label>
+            <input type="text" id="cfgName1" value="1ª Pessoa" required>
+          </div>
+          <div class="form-group">
+            <label for="cfgName2">Nome da 2ª Pessoa *</label>
+            <input type="text" id="cfgName2" value="2ª Pessoa" placeholder="Ex: Esposa, Namorada, Parceiro..." required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cfgCurrency">Moeda</label>
+          <select id="cfgCurrency">
+            <option value="€" selected>Euro (€)</option>
+            <option value="$">Dólar ($)</option>
+          </select>
+        </div>
+
+        <div class="settings-danger-box">
+          <label>Gestão de Dados</label>
+          <p>Pode recarregar exemplos para experimentar ou apagar tudo para começar do início.</p>
+          <div class="settings-danger-btns">
+            <button type="button" class="btn btn-xs btn-outline" id="btnReloadDemo">Carregar Exemplos</button>
+            <button type="button" class="btn btn-xs btn-outline-danger" id="btnClearData">Eliminar Todos os Dados</button>
+          </div>
+        </div>
+
+        <div class="modal-footer-actions">
+          <button type="button" class="btn btn-outline" id="btnCancelSettings">Fechar</button>
+          <button type="submit" class="btn btn-gold">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contentor de Notificações Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Flatpickr (Scripts e Idioma Português) -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
