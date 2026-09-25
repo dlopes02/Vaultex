@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="20" fill="#08090c"/>
+  <defs>
+    <linearGradient id="goldFavicon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF2B2"/>
+      <stop offset="45%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#AA771C"/>
+    </linearGradient>
+  </defs>
+  <!-- Hexágono Dourado -->
+  <polygon points="50,12 86,33 86,67 50,88 14,67 14,33" 
+           fill="none" 
+           stroke="url(#goldFavicon)" 
+           stroke-width="8" 
+           stroke-linejoin="round"/>
+  <!-- Círculo Central Dourado -->
+  <circle cx="50" cy="50" r="15" fill="url(#goldFavicon)"/>
+</svg>
