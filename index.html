@@ -100,13 +100,17 @@
           </div>
         </div>
         <div class="card-value gold-text" id="totalBalanceDisplay">0,00 €</div>
-        <span class="card-foot" id="totalBalanceSubtitle">Calculado: Total de entradas acumuladas - Despesas</span>
+        <div class="card-total-including-savings">
+          <span>Total com poupanças:</span>
+          <strong id="totalIncludingSavingsDisplay">0,00 €</strong>
+        </div>
+        <span class="card-foot" id="totalBalanceSubtitle">Saldo atual: entradas - despesas</span>
       </div>
 
       <!-- Entradas do Mês -->
       <div class="summary-card">
         <div class="card-top">
-          <span class="card-label">Entradas (Este Mês)</span>
+          <span class="card-label">Entradas</span>
           <div class="card-icon-box emerald-icon-box">
             <i data-lucide="arrow-down-left"></i>
           </div>
@@ -118,7 +122,7 @@
       <!-- Despesas do Mês -->
       <div class="summary-card">
         <div class="card-top">
-          <span class="card-label">Despesas (Este Mês)</span>
+          <span class="card-label">Despesas</span>
           <div class="card-icon-box rose-icon-box">
             <i data-lucide="arrow-up-right"></i>
           </div>

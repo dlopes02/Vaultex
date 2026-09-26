@@ -300,13 +300,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Saldo Disponível (Livre de Despesas e Poupanças)
-    const netTotal = totalInflow - totalOutflow - totalSavings;
-    const davidBalance = davidInflow - davidOutflow - davidSavings;
-    const partnerBalance = partnerInflow - partnerOutflow - partnerSavings;
+    const availableBalance = totalInflow - totalOutflow;
+    const totalWithSavings = availableBalance + totalSavings;
+    const davidBalance = davidInflow - davidOutflow;
+    const partnerBalance = partnerInflow - partnerOutflow;
 
     // 3. Atualizar Cards Principais
     const totalBalanceDisplay = document.getElementById('totalBalanceDisplay');
+    const totalIncludingSavingsDisplay = document.getElementById('totalIncludingSavingsDisplay');
     const monthInflowDisplay = document.getElementById('monthInflowDisplay');
     const monthOutflowDisplay = document.getElementById('monthOutflowDisplay');
     const monthSavingsTotalDisplay = document.getElementById('monthSavingsTotalDisplay');
@@ -314,7 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (totalBalanceDisplay) {
       if (activeMemberFilter === '1ª Pessoa') totalBalanceDisplay.textContent = formatMoney(davidBalance);
       else if (activeMemberFilter === 'Outro') totalBalanceDisplay.textContent = formatMoney(partnerBalance);
-      else totalBalanceDisplay.textContent = formatMoney(netTotal);
+      else totalBalanceDisplay.textContent = formatMoney(availableBalance);
+    }
+
+    if (totalIncludingSavingsDisplay) {
+      if (activeMemberFilter === '1ª Pessoa') totalIncludingSavingsDisplay.textContent = formatMoney(davidBalance + davidSavings);
+      else if (activeMemberFilter === 'Outro') totalIncludingSavingsDisplay.textContent = formatMoney(partnerBalance + partnerSavings);
+      else totalIncludingSavingsDisplay.textContent = formatMoney(totalWithSavings);
     }
 
     if (monthInflowDisplay) monthInflowDisplay.textContent = `+ ${formatMoney(totalInflow)}`;

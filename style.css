@@ -450,6 +450,21 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.card-total-including-savings {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin: -0.1rem 0 0.55rem;
+  color: var(--platinum-500);
+  font-size: 0.72rem;
+}
+
+.card-total-including-savings strong {
+  color: var(--platinum-300);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .card-foot {
   font-size: 0.72rem;
   color: var(--platinum-500);
@@ -1242,7 +1257,8 @@ body {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), 0 0 25px rgba(212, 175, 55, 0.15) !important;
   font-family: var(--font-sans) !important;
   color: var(--platinum-200) !important;
-  padding: 8px !important;
+  /* A grelha interna do Flatpickr já ocupa toda a largura do calendário. */
+  padding: 8px 0 !important;
   z-index: 9999 !important;
 }
 
