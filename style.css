@@ -1200,6 +1200,38 @@ body {
   }
 }
 
+@media (max-width: 400px) {
+  .brand-subtitle {
+    display: none;
+  }
+
+  .brand-title {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+
+  .header-actions .btn-gold {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+
+  .header-actions .btn-gold span {
+    display: none;
+  }
+
+  .filter-chip {
+    min-width: 0;
+  }
+
+  .filter-chip .member-name-1,
+  .filter-chip .member-name-2 {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 /* ==========================================================================
    FLATPICKR — TEMA PERSONALIZADO OBSIDIAN & OURO IMPERIAL
    ========================================================================== */
@@ -1342,4 +1374,3 @@ span.flatpickr-weekday {
 .flatpickr-input {
   cursor: pointer !important;
 }
-

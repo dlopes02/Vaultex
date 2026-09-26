@@ -73,7 +73,7 @@
         <button class="icon-btn" id="btnToggleSound" title="Ativar/Desativar Som dos Cliques">
           <i data-lucide="volume-2" id="soundIcon"></i>
         </button>
-        <button class="btn btn-gold" id="btnOpenNewEntry">
+        <button class="btn btn-gold" id="btnOpenNewEntry" title="Adicionar valor" aria-label="Adicionar valor">
           <i data-lucide="plus"></i>
           <span>Adicionar Valor</span>
         </button>
@@ -127,13 +127,13 @@
         <span class="card-foot" id="outflowCount">0 despesas pagas</span>
       </div>
 
-      <!-- Poupança & Cofrinho -->
+      <!-- Poupança & Cofre -->
       <div class="summary-card card-savings">
         <div class="card-top">
-          <span class="card-label">Poupança & Cofrinho</span>
+          <span class="card-label">Poupança & Cofre</span>
           <div class="card-icon-box blue-icon-box">
             <i data-lucide="piggy-bank"></i>
-          </div>
+          </div>  
         </div>
         <div class="card-value blue-text" id="monthSavingsTotalDisplay">0,00 €</div>
         <div class="card-foot-flex">
@@ -331,6 +331,7 @@
               <option value="Ordenado & Rendimentos">Ordenado & Rendimentos</option>
               <option value="Outros">Outros</option>
             </select>
+            <input type="text" id="entryCustomCategory" placeholder="Escreva a categoria" maxlength="60" hidden>
           </div>
 
           <div class="form-group">

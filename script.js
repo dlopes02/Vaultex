@@ -270,21 +270,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let partnerOutflow = 0;
     let partnerSavings = 0;
 
-    transactions.forEach(t => {
+    // Os cartões principais representam apenas o membro selecionado.
+    filteredTx.forEach(t => {
       const amt = parseFloat(t.amount) || 0;
       if (t.type === 'receita') {
         totalInflow += amt;
         inflowCount++;
-        if (t.payer === '1ª Pessoa') davidInflow += amt;
-        else partnerInflow += amt;
       } else if (t.type === 'poupanca') {
         totalSavings += amt;
         savingsCount++;
-        if (t.payer === '1ª Pessoa') davidSavings += amt;
-        else partnerSavings += amt;
       } else {
         totalOutflow += amt;
         outflowCount++;
+      }
+    });
+
+    // O quadro comparativo mantém os totais individuais de ambos os membros.
+    transactions.forEach(t => {
+      const amt = parseFloat(t.amount) || 0;
+      if (t.type === 'receita') {
+        if (t.payer === '1ª Pessoa') davidInflow += amt;
+        else partnerInflow += amt;
+      } else if (t.type === 'poupanca') {
+        if (t.payer === '1ª Pessoa') davidSavings += amt;
+        else partnerSavings += amt;
+      } else {
         if (t.payer === '1ª Pessoa') davidOutflow += amt;
         else partnerOutflow += amt;
       }
@@ -299,7 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalBalanceDisplay = document.getElementById('totalBalanceDisplay');
     const monthInflowDisplay = document.getElementById('monthInflowDisplay');
     const monthOutflowDisplay = document.getElementById('monthOutflowDisplay');
-    const monthNetDisplay = document.getElementById('monthNetDisplay');
     const monthSavingsTotalDisplay = document.getElementById('monthSavingsTotalDisplay');
 
     if (totalBalanceDisplay) {
@@ -316,11 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (activeMemberFilter === '1ª Pessoa') monthSavingsTotalDisplay.textContent = formatMoney(davidSavings);
       else if (activeMemberFilter === 'Outro') monthSavingsTotalDisplay.textContent = formatMoney(partnerSavings);
       else monthSavingsTotalDisplay.textContent = formatMoney(totalSavings);
-    }
-
-    if (monthNetDisplay) {
-      monthNetDisplay.textContent = formatMoney(netTotal);
-      monthNetDisplay.style.color = netTotal >= 0 ? '#34d399' : '#fb7185';
     }
 
     const inflowCountEl = document.getElementById('inflowCount');
@@ -565,6 +569,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnTypeIncome = document.getElementById('btnTypeIncome');
   const btnTypeSavings = document.getElementById('btnTypeSavings');
   const btnQuickSave = document.getElementById('btnQuickSave');
+  const entryCategory = document.getElementById('entryCategory');
+  const entryCustomCategory = document.getElementById('entryCustomCategory');
 
   const expenseCategories = [
     'Supermercado & Alimentação',
@@ -581,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'Trabalho Extra / Freelance',
     'Prendas & Prémios',
     'Rendimentos de Investimentos',
-    'Outros Rendimentos'
+    'Outros'
   ];
 
   const savingsCategories = [
@@ -590,18 +596,35 @@ document.addEventListener('DOMContentLoaded', () => {
     'Investimentos & PPR',
     'Férias & Viagens',
     'Carro / Habitação',
-    'Objetivo Específico'
+    'Objetivo Específico',
+    'Outros'
   ];
 
   function updateCategoryOptions(type) {
-    const sel = document.getElementById('entryCategory');
-    if (!sel) return;
+    if (!entryCategory) return;
     let list = expenseCategories;
     if (type === 'receita') list = incomeCategories;
     else if (type === 'poupanca') list = savingsCategories;
 
-    sel.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('');
+    entryCategory.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('');
+    updateCustomCategoryField();
   }
+
+  function updateCustomCategoryField(focus = false) {
+    if (!entryCategory || !entryCustomCategory) return;
+
+    const isCustomCategory = entryCategory.value.startsWith('Outros');
+    entryCustomCategory.hidden = !isCustomCategory;
+    entryCustomCategory.required = isCustomCategory;
+
+    if (!isCustomCategory) {
+      entryCustomCategory.value = '';
+    } else if (focus) {
+      entryCustomCategory.focus();
+    }
+  }
+
+  if (entryCategory) entryCategory.addEventListener('change', () => updateCustomCategoryField(true));
 
   function selectEntryType(type) {
     currentEntryType = type;
@@ -680,11 +703,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const desc = document.getElementById('entryDesc').value.trim();
       const amount = parseFloat(document.getElementById('entryAmount').value);
       const date = document.getElementById('entryDate').value;
-      const category = document.getElementById('entryCategory').value;
+      const selectedCategory = entryCategory.value;
+      const customCategory = entryCustomCategory.value.trim();
+      const category = selectedCategory.startsWith('Outros') ? customCategory : selectedCategory;
       const payer = document.getElementById('entryPayer').value;
 
-      if (!desc || isNaN(amount) || amount <= 0 || !date) {
-        alert('Por favor, indique uma descrição e um valor válido.');
+      if (!desc || isNaN(amount) || amount <= 0 || !date || !category) {
+        alert('Por favor, indique uma descrição, categoria e valor válidos.');
         return;
       }
 
