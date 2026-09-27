@@ -2,7 +2,6 @@
 
 Aplicação web de controlo financeiro pessoal para duas pessoas. Permite registar entradas, despesas e poupanças, acompanhar saldos e consultar a distribuição das despesas por categoria.
 
-![Tecnologias](https://img.shields.io/badge/HTML-CSS-JavaScript-D4AF37?style=flat-square)
 
 ## Funcionalidades
 
